@@ -5,556 +5,440 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0f0f13">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>StockChain Pro — ระบบจัดการสต๊อกสินค้า</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>StockChain Pro</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- Loading Screen -->
 <div class="loading-screen" id="loadingScreen">
-  <div class="loading-content">
-    <div class="loading-logo">
+  <div class="loading-inner">
+    <div class="loading-hex">
       <svg viewBox="0 0 60 60" fill="none">
-        <polygon points="30,3 57,18 57,42 30,57 3,42 3,18" fill="url(#hexLoad)" opacity="0.95"/>
-        <polygon points="30,12 48,22.5 48,37.5 30,48 12,37.5 12,22.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
-        <circle cx="30" cy="30" r="6" fill="white" class="loading-pulse"/>
-        <defs>
-          <linearGradient id="hexLoad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#6366f1"/>
-            <stop offset="100%" stop-color="#8b5cf6"/>
-          </linearGradient>
-        </defs>
+        <polygon points="30,3 57,18 57,42 30,57 3,42 3,18" fill="url(#lg1)"/>
+        <circle cx="30" cy="30" r="7" fill="white" opacity="0.9"/>
+        <defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
       </svg>
     </div>
-    <div class="loading-title">StockChain Pro</div>
-    <div class="loading-sub">กำลังโหลดระบบ...</div>
-    <div class="loading-bar-wrap"><div class="loading-bar-fill" id="loadingBar"></div></div>
+    <p class="loading-brand">StockChain <span>PRO</span></p>
+    <p class="loading-hint">กำลังโหลด...</p>
+    <div class="loading-track"><div class="loading-fill" id="loadFill"></div></div>
   </div>
 </div>
 
-<!-- Sidebar Overlay (Mobile) -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<!-- Overlay for sidebar (mobile) -->
+<div class="overlay" id="overlay"></div>
 
-<!-- Sidebar -->
+<!-- ======== SIDEBAR ======== -->
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 40 40" fill="none">
-        <polygon points="20,2 38,12 38,28 20,38 2,28 2,12" fill="url(#hexGrad2)" opacity="0.9"/>
-        <polygon points="20,8 32,15 32,25 20,32 8,25 8,15" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
-        <circle cx="20" cy="20" r="4" fill="white"/>
-        <defs>
-          <linearGradient id="hexGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#6366f1"/>
-            <stop offset="100%" stop-color="#8b5cf6"/>
-          </linearGradient>
-        </defs>
+  <div class="sb-head">
+    <div class="sb-logo">
+      <svg viewBox="0 0 36 36" fill="none">
+        <polygon points="18,2 34,11 34,25 18,34 2,25 2,11" fill="url(#lg2)"/>
+        <circle cx="18" cy="18" r="4" fill="white"/>
+        <defs><linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
       </svg>
+      <div class="sb-brand"><span>StockChain</span><em>PRO</em></div>
     </div>
-    <div class="logo-text">
-      <span class="logo-main">StockChain</span>
-      <span class="logo-sub">PRO</span>
-    </div>
-    <button class="sidebar-close-btn" id="sidebarCloseBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
+    <button class="sb-close" id="sbClose" aria-label="ปิด">✕</button>
   </div>
 
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">หลัก</div>
-    <a href="#" class="nav-item active" data-page="dashboard">
+  <nav class="sb-nav">
+    <div class="sb-section">หลัก</div>
+    <a class="sb-item active" data-page="dashboard">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       <span>แดชบอร์ด</span>
     </a>
-    <a href="#" class="nav-item" data-page="inventory">
+    <a class="sb-item" data-page="inventory">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
       <span>สินค้าคงคลัง</span>
-      <span class="nav-badge">248</span>
+      <b class="sb-badge" id="sbInvCount">12</b>
     </a>
-    <a href="#" class="nav-item" data-page="transactions">
+    <a class="sb-item" data-page="transactions">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
       <span>ธุรกรรม</span>
     </a>
-    <a href="#" class="nav-item" data-page="blockchain">
+    <a class="sb-item" data-page="blockchain">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="6" height="6" rx="1"/><rect x="9" y="7" width="6" height="6" rx="1"/><rect x="16" y="7" width="6" height="6" rx="1"/><line x1="5" y1="13" x2="5" y2="17"/><line x1="12" y1="13" x2="12" y2="17"/><line x1="19" y1="13" x2="19" y2="17"/><line x1="5" y1="17" x2="19" y2="17"/></svg>
       <span>Blockchain</span>
-      <span class="nav-badge chain">ON</span>
+      <b class="sb-badge green">ON</b>
     </a>
-    <div class="nav-section-label" style="margin-top:16px">จัดการ</div>
-    <a href="#" class="nav-item" data-page="suppliers">
+    <div class="sb-section" style="margin-top:12px">จัดการ</div>
+    <a class="sb-item" data-page="suppliers">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
       <span>ผู้จัดจำหน่าย</span>
     </a>
-    <a href="#" class="nav-item" data-page="reports">
+    <a class="sb-item" data-page="reports">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       <span>รายงาน</span>
     </a>
-    <a href="#" class="nav-item" data-page="alerts">
+    <a class="sb-item" data-page="alerts">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
       <span>การแจ้งเตือน</span>
-      <span class="nav-badge alert">3</span>
+      <b class="sb-badge red" id="alertBadge">3</b>
     </a>
   </nav>
 
-  <div class="sidebar-footer">
-    <div class="user-avatar">A</div>
-    <div class="user-info">
-      <span class="user-name">Admin User</span>
-      <span class="user-role">ผู้ดูแลระบบ</span>
-    </div>
-    <button class="btn-icon" title="ออกจากระบบ">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-    </button>
+  <div class="sb-foot">
+    <div class="sb-avatar">A</div>
+    <div class="sb-user"><strong>Admin</strong><span>ผู้ดูแลระบบ</span></div>
   </div>
 </aside>
 
-<!-- Main Content -->
-<main class="main-content" id="mainContent">
+<!-- ======== MAIN ======== -->
+<main class="main" id="main">
 
-  <!-- Top Bar -->
+  <!-- Topbar -->
   <header class="topbar">
-    <div class="topbar-left">
-      <button class="sidebar-toggle" id="sidebarToggle">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <div class="tb-left">
+      <button class="tb-menu" id="tbMenu" aria-label="เมนู">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <div class="page-breadcrumb">
-        <span class="breadcrumb-page" id="pageTitle">แดชบอร์ด</span>
-      </div>
+      <h1 class="tb-title" id="pageTitle">แดชบอร์ด</h1>
     </div>
-    <div class="topbar-right">
-      <div class="search-box" id="topbarSearch">
+    <div class="tb-right">
+      <!-- Search (desktop) -->
+      <div class="search-wrap" id="searchWrap">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="ค้นหาสินค้า..." id="globalSearch">
+        <input type="search" id="globalSearch" placeholder="ค้นหาสินค้า, SKU, ธุรกรรม..." autocomplete="off" spellcheck="false">
+        <kbd class="search-shortcut">Esc</kbd>
       </div>
-      <button class="btn-icon topbar-search-icon" id="mobileSearchBtn" title="ค้นหา">
+      <!-- Search icon (mobile) -->
+      <button class="tb-icon" id="mobileSearchBtn" aria-label="ค้นหา">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </button>
-      <div class="live-clock" id="liveClock"></div>
-      <button class="btn-icon topbar-btn" id="notifBtn" title="การแจ้งเตือน">
+      <div class="tb-clock" id="liveClock"></div>
+      <button class="tb-icon notif-btn" id="notifBtn" aria-label="แจ้งเตือน">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-        <span class="topbar-badge">3</span>
+        <span class="notif-dot" id="notifDot"></span>
       </button>
-      <button class="theme-toggle" id="themeToggle" title="เปลี่ยนธีม">
+      <button class="tb-icon" id="themeBtn" aria-label="เปลี่ยนธีม">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
       </button>
     </div>
   </header>
 
-  <!-- Mobile Search Bar (hidden by default) -->
-  <div class="mobile-search-bar" id="mobileSearchBar">
+  <!-- Mobile Search Bar (full width) -->
+  <div class="mobile-search" id="mobileSearch">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" placeholder="ค้นหาสินค้า, SKU, ธุรกรรม..." id="mobileSearchInput" autocomplete="off">
-    <button id="mobileSearchClose">
+    <input type="search" id="mobileSearchInput" placeholder="ค้นหาสินค้า, SKU..." autocomplete="off" spellcheck="false">
+    <button id="mobileSearchClose" aria-label="ปิด">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
 
-  <!-- Pages -->
+  <!-- Global Search Results Dropdown -->
+  <div class="search-results" id="searchResults"></div>
+
+  <!-- ========== DASHBOARD ========== -->
   <div class="page active" id="page-dashboard">
-
-    <!-- Pull-to-refresh indicator -->
-    <div class="ptr-indicator" id="ptrIndicator">
-      <div class="ptr-spinner"></div>
-      <span>ปล่อยเพื่อรีเฟรช</span>
-    </div>
-
-    <!-- KPI Cards -->
-    <div class="kpi-grid">
-      <div class="kpi-card" data-ripple>
-        <div class="kpi-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
         </div>
-        <div class="kpi-info">
-          <span class="kpi-label">สินค้าทั้งหมด</span>
-          <span class="kpi-value" data-target="248">0</span>
-          <span class="kpi-change up">+12 รายการใหม่</span>
+        <div class="kpi-body">
+          <span class="kpi-lbl">สินค้าทั้งหมด</span>
+          <span class="kpi-num" data-target="248">0</span>
+          <span class="kpi-sub up">+12 รายการใหม่</span>
         </div>
-        <div class="kpi-spark"><canvas id="spark1"></canvas></div>
       </div>
-      <div class="kpi-card" data-ripple>
-        <div class="kpi-icon" style="background:linear-gradient(135deg,#10b981,#059669)">
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:linear-gradient(135deg,#10b981,#059669)">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
         </div>
-        <div class="kpi-info">
-          <span class="kpi-label">มูลค่าสต๊อก</span>
-          <span class="kpi-value" data-target="4280000" data-prefix="฿">0</span>
-          <span class="kpi-change up">+8.3% จากเดือนก่อน</span>
+        <div class="kpi-body">
+          <span class="kpi-lbl">มูลค่าสต๊อก</span>
+          <span class="kpi-num" data-target="4280000" data-prefix="฿">0</span>
+          <span class="kpi-sub up">+8.3%</span>
         </div>
-        <div class="kpi-spark"><canvas id="spark2"></canvas></div>
       </div>
-      <div class="kpi-card" data-ripple>
-        <div class="kpi-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
         </div>
-        <div class="kpi-info">
-          <span class="kpi-label">ธุรกรรมวันนี้</span>
-          <span class="kpi-value" data-target="67">0</span>
-          <span class="kpi-change up">+23% จากเมื่อวาน</span>
+        <div class="kpi-body">
+          <span class="kpi-lbl">ธุรกรรมวันนี้</span>
+          <span class="kpi-num" data-target="67">0</span>
+          <span class="kpi-sub up">+23%</span>
         </div>
-        <div class="kpi-spark"><canvas id="spark3"></canvas></div>
       </div>
-      <div class="kpi-card" data-ripple>
-        <div class="kpi-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)">
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:linear-gradient(135deg,#ef4444,#dc2626)">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         </div>
-        <div class="kpi-info">
-          <span class="kpi-label">สินค้าใกล้หมด</span>
-          <span class="kpi-value" data-target="14">0</span>
-          <span class="kpi-change down">ต้องสั่งเพิ่ม</span>
+        <div class="kpi-body">
+          <span class="kpi-lbl">สินค้าใกล้หมด</span>
+          <span class="kpi-num" data-target="14">0</span>
+          <span class="kpi-sub down">ต้องสั่งเพิ่ม</span>
         </div>
-        <div class="kpi-spark"><canvas id="spark4"></canvas></div>
       </div>
     </div>
 
-    <!-- Charts Row -->
-    <div class="charts-row">
-      <div class="chart-card wide">
-        <div class="chart-header">
-          <div>
-            <h3>ภาพรวมสต๊อก 3D</h3>
-            <p class="chart-sub">มูลค่าสินค้าแยกตามหมวดหมู่ — ลากเพื่อหมุน</p>
-          </div>
-          <div class="chart-actions">
-            <button class="chart-btn active" onclick="setChartPeriod(this,'week')">7 วัน</button>
-            <button class="chart-btn" onclick="setChartPeriod(this,'month')">30 วัน</button>
-            <button class="chart-btn" onclick="setChartPeriod(this,'year')">ปีนี้</button>
+    <!-- 3D + Donut -->
+    <div class="two-col">
+      <div class="card">
+        <div class="card-head">
+          <div><p class="card-title">ภาพรวม 3D</p><p class="card-sub">ลากเพื่อหมุน</p></div>
+          <div class="period-btns">
+            <button class="period-btn active" onclick="setPeriod(this,'7')">7 วัน</button>
+            <button class="period-btn" onclick="setPeriod(this,'30')">30 วัน</button>
+            <button class="period-btn" onclick="setPeriod(this,'365')">ปีนี้</button>
           </div>
         </div>
-        <div id="three-container"></div>
-        <div class="three-labels" id="threeLabels"></div>
+        <div id="threeWrap"></div>
+        <div class="three-legend" id="threeLegend"></div>
       </div>
-      <div class="chart-card">
-        <div class="chart-header">
-          <div>
-            <h3>หมวดหมู่สินค้า</h3>
-            <p class="chart-sub">สัดส่วนตามจำนวน</p>
-          </div>
-        </div>
-        <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
-        <div class="donut-legend" id="donutLegend"></div>
+      <div class="card">
+        <div class="card-head"><p class="card-title">หมวดหมู่</p><p class="card-sub">สัดส่วนสินค้า</p></div>
+        <div class="donut-wrap"><canvas id="donutChart"></canvas></div>
+        <div id="donutLegend"></div>
       </div>
     </div>
 
-    <!-- Second Charts Row -->
-    <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-header">
-          <div><h3>การเคลื่อนไหวสินค้า</h3><p class="chart-sub">รับเข้า vs จ่ายออก (30 วันล่าสุด)</p></div>
-        </div>
+    <!-- Line + Blockchain mini -->
+    <div class="two-col">
+      <div class="card">
+        <div class="card-head"><p class="card-title">การเคลื่อนไหวสินค้า</p><p class="card-sub">30 วันล่าสุด</p></div>
         <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
       </div>
-      <div class="chart-card">
-        <div class="chart-header">
-          <div><h3>Blockchain Ledger</h3><p class="chart-sub">บล็อกล่าสุดที่บันทึก</p></div>
-          <div class="chain-status">
-            <span class="chain-dot"></span>
-            <span class="chain-status-text">เชื่อมต่อแล้ว</span>
-          </div>
+      <div class="card">
+        <div class="card-head">
+          <p class="card-title">Blockchain Ledger</p>
+          <div class="chain-live"><span class="chain-dot"></span>Live</div>
         </div>
-        <div class="blockchain-mini" id="blockchainMini"></div>
+        <div class="bc-mini" id="bcMini"></div>
       </div>
     </div>
 
-    <!-- Recent Table / Mobile Cards -->
-    <div class="table-card">
-      <div class="table-header">
-        <h3>ธุรกรรมล่าสุด</h3>
-        <button class="btn-outline" onclick="navigateTo('transactions')">ดูทั้งหมด</button>
+    <!-- Recent Transactions -->
+    <div class="card">
+      <div class="card-head">
+        <p class="card-title">ธุรกรรมล่าสุด</p>
+        <button class="link-btn" onclick="navigateTo('transactions')">ดูทั้งหมด →</button>
       </div>
-      <!-- Desktop Table -->
-      <div class="table-wrap desktop-only">
-        <table class="data-table" id="recentTable">
-          <thead>
-            <tr>
-              <th>รหัสธุรกรรม</th>
-              <th>สินค้า</th>
-              <th>ประเภท</th>
-              <th>จำนวน</th>
-              <th>มูลค่า</th>
-              <th>เวลา</th>
-              <th>Hash</th>
-              <th>สถานะ</th>
-            </tr>
-          </thead>
-          <tbody id="recentTableBody"></tbody>
+      <!-- Desktop table -->
+      <div class="tbl-wrap" id="recentTblWrap">
+        <table class="tbl">
+          <thead><tr><th>TX ID</th><th>สินค้า</th><th>ประเภท</th><th>จำนวน</th><th>มูลค่า</th><th>เวลา</th><th>Hash</th><th>สถานะ</th></tr></thead>
+          <tbody id="recentTbody"></tbody>
         </table>
       </div>
-      <!-- Mobile Cards -->
-      <div class="mobile-tx-list" id="recentMobileList"></div>
+      <!-- Mobile list -->
+      <div class="tx-list" id="recentTxList"></div>
     </div>
   </div>
 
-  <!-- Inventory Page -->
+  <!-- ========== INVENTORY ========== -->
   <div class="page" id="page-inventory">
-    <div class="page-actions">
-      <div class="search-box inline">
+    <div class="toolbar">
+      <div class="search-wrap inline" id="invSearchWrap">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="ค้นหาสินค้า..." id="inventorySearch" oninput="filterInventory()">
+        <input type="search" id="invSearch" placeholder="ค้นหาสินค้า, SKU..." autocomplete="off">
       </div>
-      <select class="select-filter" id="categoryFilter" onchange="filterInventory()">
-        <option value="">หมวดหมู่ทั้งหมด</option>
+      <select class="sel" id="catFilter">
+        <option value="">ทุกหมวดหมู่</option>
         <option value="Electronics">อิเล็กทรอนิกส์</option>
-        <option value="Office">เครื่องใช้สำนักงาน</option>
+        <option value="Office">สำนักงาน</option>
         <option value="Furniture">เฟอร์นิเจอร์</option>
         <option value="Tools">เครื่องมือ</option>
         <option value="Consumables">วัสดุสิ้นเปลือง</option>
       </select>
+      <button class="btn-p" onclick="openAddModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        เพิ่มสินค้า
+      </button>
     </div>
-    <!-- Desktop Table -->
-    <div class="table-card desktop-only">
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>SKU</th><th>ชื่อสินค้า</th><th>หมวดหมู่</th><th>จำนวนคงเหลือ</th>
-              <th>จุดสั่งซื้อ</th><th>ราคาต้นทุน</th><th>มูลค่ารวม</th><th>สถานะ</th><th>จัดการ</th>
-            </tr>
-          </thead>
-          <tbody id="inventoryTableBody"></tbody>
+    <div class="inv-result-bar" id="invResultBar"></div>
+    <!-- Desktop table -->
+    <div class="card hide-mobile">
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>SKU</th><th>ชื่อสินค้า</th><th>หมวดหมู่</th><th>คงเหลือ</th><th>จุดสั่งซื้อ</th><th>ราคา/หน่วย</th><th>มูลค่ารวม</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+          <tbody id="invTbody"></tbody>
         </table>
       </div>
     </div>
-    <!-- Mobile Card Grid -->
-    <div class="inv-card-grid mobile-only" id="inventoryCardGrid"></div>
+    <!-- Mobile cards -->
+    <div class="inv-cards show-mobile" id="invCards"></div>
   </div>
 
-  <!-- Transactions Page -->
+  <!-- ========== TRANSACTIONS ========== -->
   <div class="page" id="page-transactions">
-    <div class="page-actions">
-      <div class="search-box inline">
+    <div class="toolbar">
+      <div class="search-wrap inline">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="ค้นหาธุรกรรม...">
+        <input type="search" id="txSearch" placeholder="ค้นหาธุรกรรม..." autocomplete="off">
       </div>
+      <button class="btn-p" onclick="openTxModal()">+ บันทึกธุรกรรม</button>
     </div>
-    <div class="table-card desktop-only">
-      <div class="table-wrap">
-        <table class="data-table">
+    <!-- Desktop -->
+    <div class="card hide-mobile">
+      <div class="tbl-wrap">
+        <table class="tbl">
           <thead><tr><th>TX ID</th><th>สินค้า</th><th>ประเภท</th><th>จำนวน</th><th>มูลค่า</th><th>ผู้ดำเนินการ</th><th>เวลา</th><th>Hash</th><th>สถานะ</th></tr></thead>
-          <tbody id="txTableBody"></tbody>
+          <tbody id="txTbody"></tbody>
         </table>
       </div>
     </div>
-    <div class="mobile-tx-list mobile-only" id="txMobileList"></div>
+    <!-- Mobile -->
+    <div class="tx-list show-mobile" id="txMobileList"></div>
   </div>
 
-  <!-- Blockchain Page -->
+  <!-- ========== BLOCKCHAIN ========== -->
   <div class="page" id="page-blockchain">
-    <div class="bc-stats-row" id="bcStatsRow">
-      <div class="bc-stat-pill">
-        <span class="bc-stat-label">บล็อกทั้งหมด</span>
-        <span class="bc-stat-value" id="totalBlocks">0</span>
-      </div>
-      <div class="bc-stat-pill">
-        <span class="bc-stat-label">ธุรกรรมในเชน</span>
-        <span class="bc-stat-value" id="totalTxInChain">0</span>
-      </div>
-      <div class="bc-stat-pill">
-        <span class="bc-stat-label">ความถูกต้อง</span>
-        <span class="bc-stat-value valid" id="chainValid">✓ ถูกต้อง</span>
-      </div>
-      <div class="bc-stat-pill">
-        <span class="bc-stat-label">Algorithm</span>
-        <span class="bc-stat-value">SHA-256</span>
-      </div>
+    <div class="bc-pills">
+      <div class="bc-pill"><span>บล็อกทั้งหมด</span><strong id="bcTotal">0</strong></div>
+      <div class="bc-pill"><span>ธุรกรรม</span><strong id="bcTxCount">0</strong></div>
+      <div class="bc-pill"><span>ความถูกต้อง</span><strong id="bcValid" class="green">✓ ถูกต้อง</strong></div>
+      <div class="bc-pill"><span>Algorithm</span><strong>SHA-256</strong></div>
     </div>
-    <button class="btn-primary verify-btn" onclick="verifyChain()">
+    <button class="btn-p verify-full" onclick="verifyChain()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
       ตรวจสอบ Chain ทั้งหมด
     </button>
-    <div class="blockchain-chain" id="blockchainChain"></div>
+    <div class="bc-chain" id="bcChain"></div>
   </div>
 
-  <!-- Suppliers Page -->
+  <!-- ========== SUPPLIERS ========== -->
   <div class="page" id="page-suppliers">
-    <div class="page-actions">
-      <button class="btn-primary" onclick="showToast('info','กำลังพัฒนา','ฟีเจอร์นี้จะเปิดใช้เร็ว ๆ นี้')">+ เพิ่มผู้จัดจำหน่าย</button>
+    <div class="toolbar">
+      <button class="btn-p" onclick="showToast('info','กำลังพัฒนา','ฟีเจอร์จะเปิดเร็ว ๆ นี้')">+ เพิ่มผู้จัดจำหน่าย</button>
     </div>
-    <div class="supplier-grid" id="supplierGrid"></div>
+    <div class="sup-grid" id="supGrid"></div>
   </div>
 
-  <!-- Reports Page -->
+  <!-- ========== REPORTS ========== -->
   <div class="page" id="page-reports">
-    <div class="reports-grid">
-      <div class="report-card" data-ripple>
-        <div class="report-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        </div>
-        <h3>รายงานสต๊อกประจำเดือน</h3>
-        <p>สรุปการเคลื่อนไหวสินค้าและมูลค่าคงคลัง</p>
-        <button class="btn-outline" onclick="generateReport('monthly')">ดาวน์โหลด PDF</button>
-      </div>
-      <div class="report-card" data-ripple>
-        <div class="report-icon" style="background:linear-gradient(135deg,#10b981,#059669)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="7" width="6" height="6" rx="1"/><rect x="9" y="7" width="6" height="6" rx="1"/><rect x="16" y="7" width="6" height="6" rx="1"/><line x1="5" y1="13" x2="5" y2="17"/><line x1="12" y1="13" x2="12" y2="17"/><line x1="19" y1="13" x2="19" y2="17"/><line x1="5" y1="17" x2="19" y2="17"/></svg>
-        </div>
-        <h3>รายงาน Blockchain Audit</h3>
-        <p>ตรวจสอบความถูกต้องของธุรกรรมทั้งหมด</p>
-        <button class="btn-outline" onclick="generateReport('blockchain')">ดาวน์โหลด PDF</button>
-      </div>
-      <div class="report-card" data-ripple>
-        <div class="report-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <h3>สินค้าใกล้หมด</h3>
-        <p>รายการสินค้าที่ต้องสั่งซื้อเพิ่มด่วน</p>
-        <button class="btn-outline" onclick="generateReport('lowstock')">ดาวน์โหลด PDF</button>
-      </div>
-      <div class="report-card" data-ripple>
-        <div class="report-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </div>
-        <h3>วิเคราะห์แนวโน้ม</h3>
-        <p>พยากรณ์ความต้องการสินค้าในอนาคต</p>
-        <button class="btn-outline" onclick="generateReport('trend')">ดาวน์โหลด PDF</button>
-      </div>
+    <div class="rep-grid">
+      <div class="rep-card"><div class="rep-ico" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><h3>สต๊อกประจำเดือน</h3><p>สรุปการเคลื่อนไหวและมูลค่าคงคลัง</p><button class="btn-o" onclick="generateReport('monthly')">ดาวน์โหลด PDF</button></div>
+      <div class="rep-card"><div class="rep-ico" style="background:linear-gradient(135deg,#10b981,#059669)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="7" width="6" height="6" rx="1"/><rect x="9" y="7" width="6" height="6" rx="1"/><rect x="16" y="7" width="6" height="6" rx="1"/></svg></div><h3>Blockchain Audit</h3><p>ตรวจสอบธุรกรรมทั้งหมดในเชน</p><button class="btn-o" onclick="generateReport('blockchain')">ดาวน์โหลด PDF</button></div>
+      <div class="rep-card"><div class="rep-ico" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3>สินค้าใกล้หมด</h3><p>รายการสินค้าที่ต้องสั่งซื้อด่วน</p><button class="btn-o" onclick="generateReport('lowstock')">ดาวน์โหลด PDF</button></div>
+      <div class="rep-card"><div class="rep-ico" style="background:linear-gradient(135deg,#ef4444,#dc2626)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><h3>วิเคราะห์แนวโน้ม</h3><p>พยากรณ์ความต้องการสินค้า</p><button class="btn-o" onclick="generateReport('trend')">ดาวน์โหลด PDF</button></div>
     </div>
   </div>
 
-  <!-- Alerts Page -->
+  <!-- ========== ALERTS ========== -->
   <div class="page" id="page-alerts">
     <div class="alerts-list" id="alertsList"></div>
   </div>
 
 </main>
 
-<!-- Mobile Bottom Navigation -->
+<!-- Bottom Nav (Mobile) -->
 <nav class="bottom-nav" id="bottomNav">
-  <a class="bottom-nav-item active" data-page="dashboard">
+  <a class="bn-item active" data-page="dashboard">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     <span>หน้าหลัก</span>
   </a>
-  <a class="bottom-nav-item" data-page="inventory">
+  <a class="bn-item" data-page="inventory">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
     <span>สินค้า</span>
   </a>
-  <div class="bottom-nav-fab-wrap">
-    <button class="bottom-nav-fab" id="fabBtn">
+  <div class="bn-fab-wrap">
+    <button class="bn-fab" id="fabBtn" aria-label="เพิ่ม">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
   </div>
-  <a class="bottom-nav-item" data-page="transactions">
+  <a class="bn-item" data-page="transactions">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/></svg>
     <span>ธุรกรรม</span>
   </a>
-  <a class="bottom-nav-item" data-page="blockchain">
+  <a class="bn-item" data-page="blockchain">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="6" height="6" rx="1"/><rect x="9" y="7" width="6" height="6" rx="1"/><rect x="16" y="7" width="6" height="6" rx="1"/></svg>
     <span>เชน</span>
   </a>
 </nav>
 
-<!-- FAB Speed Dial -->
+<!-- FAB Menu -->
+<div class="fab-overlay" id="fabOverlay"></div>
 <div class="fab-menu" id="fabMenu">
-  <div class="fab-backdrop" id="fabBackdrop"></div>
-  <div class="fab-options">
-    <button class="fab-option" onclick="openAddModal();closeFab()">
-      <span class="fab-option-label">เพิ่มสินค้า</span>
-      <div class="fab-option-btn" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
-      </div>
-    </button>
-    <button class="fab-option" onclick="openTransactionModal();closeFab()">
-      <span class="fab-option-label">บันทึกธุรกรรม</span>
-      <div class="fab-option-btn" style="background:linear-gradient(135deg,#10b981,#059669)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
-      </div>
-    </button>
-    <button class="fab-option" onclick="verifyChain();closeFab()">
-      <span class="fab-option-label">ตรวจสอบ Chain</span>
-      <div class="fab-option-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-      </div>
-    </button>
-  </div>
+  <button class="fab-opt" onclick="openAddModal();closeFab()">
+    <span>เพิ่มสินค้า</span>
+    <div class="fab-opt-ico" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+    </div>
+  </button>
+  <button class="fab-opt" onclick="openTxModal();closeFab()">
+    <span>บันทึกธุรกรรม</span>
+    <div class="fab-opt-ico" style="background:linear-gradient(135deg,#10b981,#059669)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+    </div>
+  </button>
 </div>
 
 <!-- Modal: Add Product -->
-<div class="modal-overlay" id="addModal">
+<div class="modal-bg" id="addModal">
   <div class="modal">
-    <div class="modal-header">
-      <h3 id="modalTitle">เพิ่มสินค้าใหม่</h3>
-      <button class="btn-icon" onclick="closeModal('addModal')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
+    <div class="modal-head"><h3>เพิ่มสินค้าใหม่</h3><button onclick="closeModal('addModal')" class="modal-close">✕</button></div>
     <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group"><label>ชื่อสินค้า</label><input type="text" id="fName" placeholder="กรอกชื่อสินค้า"></div>
-        <div class="form-group"><label>SKU</label><input type="text" id="fSku" placeholder="เช่น SKU-001"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
+      <div class="form-grid">
+        <div class="fg"><label>ชื่อสินค้า *</label><input type="text" id="fName" placeholder="ชื่อสินค้า"></div>
+        <div class="fg"><label>รหัส SKU *</label><input type="text" id="fSku" placeholder="SKU-001"></div>
+        <div class="fg">
           <label>หมวดหมู่</label>
-          <select id="fCategory">
+          <select id="fCat">
             <option value="Electronics">อิเล็กทรอนิกส์</option>
-            <option value="Office">เครื่องใช้สำนักงาน</option>
+            <option value="Office">สำนักงาน</option>
             <option value="Furniture">เฟอร์นิเจอร์</option>
             <option value="Tools">เครื่องมือ</option>
             <option value="Consumables">วัสดุสิ้นเปลือง</option>
           </select>
         </div>
-        <div class="form-group"><label>ราคาต้นทุน (฿)</label><input type="number" id="fPrice" placeholder="0.00" inputmode="decimal"></div>
+        <div class="fg"><label>ราคาต้นทุน (฿)</label><input type="number" id="fPrice" placeholder="0" inputmode="decimal"></div>
+        <div class="fg"><label>จำนวนเริ่มต้น</label><input type="number" id="fQty" placeholder="0" inputmode="numeric"></div>
+        <div class="fg"><label>จุดสั่งซื้อ</label><input type="number" id="fReorder" placeholder="10" inputmode="numeric"></div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>จำนวนเริ่มต้น</label><input type="number" id="fQty" placeholder="0" inputmode="numeric"></div>
-        <div class="form-group"><label>จุดสั่งซื้อขั้นต่ำ</label><input type="number" id="fReorder" placeholder="10" inputmode="numeric"></div>
-      </div>
-      <div class="form-group"><label>หมายเหตุ</label><textarea id="fNote" placeholder="รายละเอียดเพิ่มเติม..."></textarea></div>
-      <div class="blockchain-notice">
+      <div class="bc-notice">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="6" height="6" rx="1"/><rect x="9" y="7" width="6" height="6" rx="1"/><rect x="16" y="7" width="6" height="6" rx="1"/><line x1="5" y1="13" x2="5" y2="17"/><line x1="12" y1="13" x2="12" y2="17"/><line x1="19" y1="13" x2="19" y2="17"/><line x1="5" y1="17" x2="19" y2="17"/></svg>
-        <span>ข้อมูลนี้จะถูกบันทึกลง Blockchain อัตโนมัติเพื่อความโปร่งใส</span>
+        ข้อมูลจะถูกบันทึกลง Blockchain อัตโนมัติ
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-outline" onclick="closeModal('addModal')">ยกเลิก</button>
-      <button class="btn-primary" onclick="saveProduct()">บันทึกและเพิ่มในเชน</button>
+    <div class="modal-foot">
+      <button class="btn-o" onclick="closeModal('addModal')">ยกเลิก</button>
+      <button class="btn-p" onclick="saveProduct()">บันทึกในเชน</button>
     </div>
   </div>
 </div>
 
 <!-- Modal: Transaction -->
-<div class="modal-overlay" id="txModal">
+<div class="modal-bg" id="txModal">
   <div class="modal">
-    <div class="modal-header">
-      <h3>บันทึกธุรกรรมใหม่</h3>
-      <button class="btn-icon" onclick="closeModal('txModal')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
+    <div class="modal-head"><h3>บันทึกธุรกรรม</h3><button onclick="closeModal('txModal')" class="modal-close">✕</button></div>
     <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label>ประเภทธุรกรรม</label>
+      <div class="form-grid">
+        <div class="fg">
+          <label>ประเภท</label>
           <select id="txType">
-            <option value="IN">▲ รับสินค้าเข้า</option>
-            <option value="OUT">▼ จ่ายสินค้าออก</option>
-            <option value="ADJUST">⟳ ปรับปรุงสต๊อก</option>
+            <option value="IN">▲ รับเข้า</option>
+            <option value="OUT">▼ จ่ายออก</option>
+            <option value="ADJUST">⟳ ปรับปรุง</option>
           </select>
         </div>
-        <div class="form-group"><label>สินค้า</label><select id="txProduct"></select></div>
+        <div class="fg"><label>สินค้า</label><select id="txProduct"></select></div>
+        <div class="fg"><label>จำนวน *</label><input type="number" id="txQty" placeholder="0" min="1" inputmode="numeric"></div>
+        <div class="fg"><label>ราคาต่อหน่วย (฿)</label><input type="number" id="txPrice" placeholder="0" inputmode="decimal"></div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>จำนวน</label><input type="number" id="txQty" placeholder="0" min="1" inputmode="numeric"></div>
-        <div class="form-group"><label>ราคาต่อหน่วย (฿)</label><input type="number" id="txPrice" placeholder="0.00" inputmode="decimal"></div>
-      </div>
-      <div class="form-group"><label>เหตุผล / หมายเหตุ</label><textarea id="txNote" placeholder="ระบุเหตุผล..."></textarea></div>
-      <div class="blockchain-notice">
+      <div class="fg" style="margin-top:4px"><label>หมายเหตุ</label><textarea id="txNote" placeholder="ระบุเหตุผล..." rows="2"></textarea></div>
+      <div class="bc-notice">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="6" height="6" rx="1"/><rect x="9" y="7" width="6" height="6" rx="1"/><rect x="16" y="7" width="6" height="6" rx="1"/><line x1="5" y1="13" x2="5" y2="17"/><line x1="12" y1="13" x2="12" y2="17"/><line x1="19" y1="13" x2="19" y2="17"/><line x1="5" y1="17" x2="19" y2="17"/></svg>
-        <span>ธุรกรรมนี้จะถูก Hash และบันทึกลง Blockchain ทันที</span>
+        ธุรกรรมจะถูก Hash และบันทึกลง Blockchain ทันที
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-outline" onclick="closeModal('txModal')">ยกเลิก</button>
-      <button class="btn-primary" onclick="saveTransaction()">ยืนยันและบันทึกในเชน</button>
+    <div class="modal-foot">
+      <button class="btn-o" onclick="closeModal('txModal')">ยกเลิก</button>
+      <button class="btn-p" onclick="saveTransaction()">ยืนยันและบันทึก</button>
     </div>
   </div>
 </div>
 
 <!-- Toast -->
-<div class="toast-container" id="toastContainer"></div>
+<div class="toasts" id="toasts"></div>
 
 <script src="app.js"></script>
 </body>
